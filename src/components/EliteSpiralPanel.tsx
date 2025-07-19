@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Filter, Users, Star, Trophy, MessageCircle, Plus, Trash2, Shuffle, Crown, X } from 'lucide-react';
+import { Sparkles, Filter, Users, Star, Trophy, MessageCircle, Plus, Trash2, Shuffle, Crown, X, Zap } from 'lucide-react';
 import { Winner, EliteSpiral } from '../config/data';
 import { supabase } from '../lib/supabase';
 import PasswordModal from './PasswordModal';
+import ConfettiAnimation from './ConfettiAnimation';
+import FailAnimation from './FailAnimation';
 
 
 interface EliteSpiralPanelProps {
@@ -19,6 +21,10 @@ const EliteSpiralPanel: React.FC<EliteSpiralPanelProps> = ({ winners, eliteWinne
   const [selectedWinner, setSelectedWinner] = useState<Winner | null>(null);
   const [chatIds, setChatIds] = useState<string[]>(['']);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [currentEliteWinner, setCurrentEliteWinner] = useState<EliteSpiral | null>(null);
+  const [showEliteConfetti, setShowEliteConfetti] = useState(false);
+  const [showEliteFailAnimation, setShowEliteFailAnimation] = useState(false);
+  const [failedEliteName, setFailedEliteName] = useState('');
 
   // Get unique departments from winners
   const departments = [...new Set(winners.map(winner => winner.department))].sort();
@@ -107,14 +113,32 @@ const EliteSpiralPanel: React.FC<EliteSpiralPanelProps> = ({ winners, eliteWinne
       
       await onEliteWinnerAdded(eliteEntry);
       
+      // Show elite winner celebration
+      setCurrentEliteWinner(eliteEntry);
+      setShowEliteConfetti(true);
+      
       // Reset form
       setSelectedWinner(null);
       setChatIds(['']);
     } else if (action === 'fail') {
+      // Show elite fail animation
+      setFailedEliteName(selectedWinner?.name || '');
+      setShowEliteFailAnimation(true);
+      
       // Just reset the form for fail
       setSelectedWinner(null);
       setChatIds(['']);
     }
+  };
+
+  const handleCloseEliteWinner = () => {
+    setShowEliteConfetti(false);
+    setCurrentEliteWinner(null);
+  };
+
+  const handleCloseEliteFail = () => {
+    setShowEliteFailAnimation(false);
+    setFailedEliteName('');
   };
 
 
