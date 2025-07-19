@@ -97,44 +97,81 @@ const FailAnimation: React.FC<FailAnimationProps> = ({ isActive, guideName, onCl
 
           {/* Animated Emojis */}
           <div className="flex justify-center gap-2 sm:gap-4 mb-4 sm:mb-6">
-            <span className="text-3xl sm:text-4xl md:text-6xl fail-emoji">😅</span>
-            <span className="text-3xl sm:text-4xl md:text-6xl fail-float">🎭</span>
-            <span className="text-3xl sm:text-4xl md:text-6xl fail-shake">😂</span>
+            {isElite ? (
+              <>
+                <span className="text-3xl sm:text-4xl md:text-6xl fail-emoji">👑</span>
+                <span className="text-3xl sm:text-4xl md:text-6xl fail-float">🎭</span>
+                <span className="text-3xl sm:text-4xl md:text-6xl fail-shake">⚔️</span>
+              </>
+            ) : (
+              <>
+                <span className="text-3xl sm:text-4xl md:text-6xl fail-emoji">😅</span>
+                <span className="text-3xl sm:text-4xl md:text-6xl fail-float">🎭</span>
+                <span className="text-3xl sm:text-4xl md:text-6xl fail-shake">😂</span>
+              </>
+            )}
           </div>
           
           {/* Main Message */}
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold text-white mb-2 sm:mb-4 fail-shake">
-            OOPS! 
+          <h1 className={`text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold mb-2 sm:mb-4 fail-shake ${
+            isElite ? 'text-yellow-300' : 'text-white'
+          }`}>
+            {isElite ? 'NOT ELITE!' : 'OOPS!'}
           </h1>
           
-          <div className="bg-white bg-opacity-20 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-6 backdrop-blur-sm border border-white border-opacity-30">
-            <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-1 sm:mb-2 break-words">
+          <div className={`rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-6 backdrop-blur-sm ${
+            isElite 
+              ? 'bg-black bg-opacity-30 border border-yellow-400 border-opacity-50' 
+              : 'bg-white bg-opacity-20 border border-white border-opacity-30'
+          }`}>
+            <h2 className={`text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2 break-words ${
+              isElite ? 'text-yellow-200' : 'text-white'
+            }`}>
               {guideName}
             </h2>
-            <p className="text-sm sm:text-base md:text-xl text-white opacity-90 break-words">
+            <p className={`text-sm sm:text-base md:text-xl opacity-90 break-words ${
+              isElite ? 'text-yellow-100' : 'text-white'
+            }`}>
               {randomMessage}
             </p>
           </div>
           
           {/* Funny Animation Elements */}
           <div className="flex justify-center gap-2 sm:gap-4 md:gap-8 mb-4 sm:mb-6">
-            <div className="text-2xl sm:text-3xl md:text-4xl fail-float" style={{ animationDelay: '0.2s' }}>🎪</div>
-            <div className="text-2xl sm:text-3xl md:text-4xl fail-float" style={{ animationDelay: '0.4s' }}>🎨</div>
-            <div className="text-2xl sm:text-3xl md:text-4xl fail-float" style={{ animationDelay: '0.6s' }}>🎵</div>
-            <div className="text-2xl sm:text-3xl md:text-4xl fail-float" style={{ animationDelay: '0.8s' }}>🎲</div>
+            {isElite ? (
+              <>
+                <div className="text-2xl sm:text-3xl md:text-4xl fail-float" style={{ animationDelay: '0.2s' }}>🏰</div>
+                <div className="text-2xl sm:text-3xl md:text-4xl fail-float" style={{ animationDelay: '0.4s' }}>⚡</div>
+                <div className="text-2xl sm:text-3xl md:text-4xl fail-float" style={{ animationDelay: '0.6s' }}>🌟</div>
+                <div className="text-2xl sm:text-3xl md:text-4xl fail-float" style={{ animationDelay: '0.8s' }}>🎯</div>
+              </>
+            ) : (
+              <>
+                <div className="text-2xl sm:text-3xl md:text-4xl fail-float" style={{ animationDelay: '0.2s' }}>🎪</div>
+                <div className="text-2xl sm:text-3xl md:text-4xl fail-float" style={{ animationDelay: '0.4s' }}>🎨</div>
+                <div className="text-2xl sm:text-3xl md:text-4xl fail-float" style={{ animationDelay: '0.6s' }}>🎵</div>
+                <div className="text-2xl sm:text-3xl md:text-4xl fail-float" style={{ animationDelay: '0.8s' }}>🎲</div>
+              </>
+            )}
           </div>
           
-          <div className="text-white text-sm sm:text-base md:text-lg opacity-80 mb-4 sm:mb-6 px-2">
-            Don't worry, every great story has plot twists! 📚✨
+          <div className={`text-sm sm:text-base md:text-lg opacity-80 mb-4 sm:mb-6 px-2 ${
+            isElite ? 'text-yellow-200' : 'text-white'
+          }`}>
+            {isElite ? "The royal quest continues! Keep striving for greatness! 👑✨" : "Don't worry, every great story has plot twists! 📚✨"}
           </div>
 
           {/* Close Button */}
           <button
             onClick={handleClose}
-            className="bg-white bg-opacity-20 text-white px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-lg sm:rounded-xl hover:bg-opacity-30 transition-all transform hover:scale-105 font-semibold text-sm sm:text-base backdrop-blur-sm z-10 relative border border-white border-opacity-30"
+            className={`px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-lg sm:rounded-xl transition-all transform hover:scale-105 font-semibold text-sm sm:text-base backdrop-blur-sm z-10 relative ${
+              isElite 
+                ? 'bg-yellow-600 bg-opacity-80 text-white hover:bg-opacity-90 border border-yellow-400' 
+                : 'bg-white bg-opacity-20 text-white hover:bg-opacity-30 border border-white border-opacity-30'
+            }`}
             type="button"
           >
-            Try Again
+            {isElite ? 'Continue Elite Quest' : 'Try Again'}
           </button>
         </div>
       </div>

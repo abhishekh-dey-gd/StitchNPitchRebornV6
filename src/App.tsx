@@ -650,6 +650,7 @@ function App() {
         isActive={showFailAnimation} 
         guideName={failedGuideName}
         onClose={handleCloseFail}
+        isElite={false}
       />
     </div>
   );
