@@ -18,6 +18,15 @@ import { Guide, Winner, Loser, EliteSpiral } from './config/data';
 
 type AppTab = 'selection' | 'winners' | 'elite-spiral';
 
+// Session management constants
+const SESSION_KEY = 'stitchNPitchSession';
+const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+interface SessionData {
+  isLoggedIn: boolean;
+  timestamp: number;
+}
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentTab, setCurrentTab] = useState<AppTab>('selection');
@@ -38,24 +47,75 @@ function App() {
   const [isExportDataOpen, setIsExportDataOpen] = useState(false);
   const [isBackupRestoreOpen, setIsBackupRestoreOpen] = useState(false);
 
+  // Check for existing session on app load
+  useEffect(() => {
+    checkExistingSession();
+  }, []);
+
   // Load winners from Supabase on component mount
   useEffect(() => {
-    loadWinners();
-    loadLosers();
-    loadEliteWinners();
-  }, []);
+    if (isLoggedIn) {
+      loadWinners();
+      loadLosers();
+      loadEliteWinners();
+    }
+  }, [isLoggedIn]);
+
+  const checkExistingSession = () => {
+    try {
+      const sessionData = localStorage.getItem(SESSION_KEY);
+      if (sessionData) {
+        const parsed: SessionData = JSON.parse(sessionData);
+        const now = Date.now();
+        
+        // Check if session is still valid (within 24 hours)
+        if (parsed.isLoggedIn && (now - parsed.timestamp) < SESSION_DURATION) {
+          setIsLoggedIn(true);
+          return;
+        } else {
+          // Session expired, clear it
+          localStorage.removeItem(SESSION_KEY);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking session:', error);
+      localStorage.removeItem(SESSION_KEY);
+    }
+    
+    setLoading(false);
+  };
+
+  const saveSession = (loggedIn: boolean) => {
+    const sessionData: SessionData = {
+      isLoggedIn: loggedIn,
+      timestamp: Date.now()
+    };
+    
+    if (loggedIn) {
+      localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+    } else {
+      localStorage.removeItem(SESSION_KEY);
+    }
+  };
 
   // Handle login
   const handleLogin = (success: boolean) => {
     if (success) {
       setIsLoggedIn(true);
+      saveSession(true);
+      setLoading(false);
     }
   };
 
   // Handle logout
   const handleLogout = () => {
     setIsLoggedIn(false);
+    saveSession(false);
     setCurrentTab('selection');
+    // Clear any cached data
+    setWinners([]);
+    setLosers([]);
+    setEliteWinners([]);
   };
 
   const loadWinners = async () => {
@@ -527,6 +587,7 @@ function App() {
             eliteWinners={eliteWinners}
             onDeleteWinner={deleteWinnerFromDatabase}
             onDeleteEliteWinner={deleteEliteWinnerFromDatabase}
+          isLoggedIn={isLoggedIn}
           />
         )}
       </div>
@@ -535,7 +596,8 @@ function App() {
       {currentWinner && (
         <WinnerDisplay
           winner={currentWinner}
-          onBack={handleCloseWinner}
+          isLoggedIn={isLoggedIn}
+          isLoggedIn={isLoggedIn}
         />
       )}
 

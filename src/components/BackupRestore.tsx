@@ -12,6 +12,7 @@ interface BackupRestoreProps {
   losers: Loser[];
   eliteWinners: EliteSpiral[];
   onRestoreWinners: (winners: Winner[], losers?: Loser[], eliteWinners?: EliteSpiral[]) => void;
+  isLoggedIn?: boolean;
 }
 
 interface BackupData {
@@ -37,7 +38,8 @@ const BackupRestore: React.FC<BackupRestoreProps> = ({
   winners, 
   losers,
   eliteWinners,
-  onRestoreWinners 
+  onRestoreWinners,
+  isLoggedIn = false
 }) => {
   const [activeTab, setActiveTab] = useState<'backup' | 'restore'>('backup');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -103,8 +105,12 @@ const BackupRestore: React.FC<BackupRestoreProps> = ({
   };
 
   const downloadBackup = () => {
-    setPendingAction('backup');
-    setShowPasswordModal(true);
+    if (isLoggedIn) {
+      performBackup();
+    } else {
+      setPendingAction('backup');
+      setShowPasswordModal(true);
+    }
   };
 
   const performBackup = async () => {
@@ -177,8 +183,12 @@ const BackupRestore: React.FC<BackupRestoreProps> = ({
 
   const initiateRestore = () => {
     if (!restorePreview) return;
-    setPendingAction('restore');
-    setShowPasswordModal(true);
+    if (isLoggedIn) {
+      performRestore();
+    } else {
+      setPendingAction('restore');
+      setShowPasswordModal(true);
+    }
   };
 
   const performRestore = async () => {
@@ -297,7 +307,7 @@ const BackupRestore: React.FC<BackupRestoreProps> = ({
       </style>
 
       {/* Password Modal - Higher z-index */}
-      {showPasswordModal && (
+      {showPasswordModal && !isLoggedIn && (
         <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
           <div className="bg-white bg-opacity-10 backdrop-blur-xl border border-white border-opacity-20 rounded-3xl p-8 max-w-md w-full shadow-2xl">
             <div className="flex items-center justify-between mb-6">

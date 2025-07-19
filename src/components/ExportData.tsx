@@ -12,11 +12,12 @@ interface ExportDataProps {
   winners: Winner[];
   losers: Loser[];
   eliteWinners: EliteSpiral[];
+  isLoggedIn?: boolean;
 }
 
 type ExportType = 'winners-csv' | 'winners-pdf' | 'losers-csv' | 'losers-pdf' | 'elite-csv' | 'elite-pdf' | 'guides-csv' | 'complete-data-csv';
 
-const ExportData: React.FC<ExportDataProps> = ({ isOpen, onClose, winners, losers, eliteWinners }) => {
+const ExportData: React.FC<ExportDataProps> = ({ isOpen, onClose, winners, losers, eliteWinners, isLoggedIn = false }) => {
   const [selectedExport, setSelectedExport] = useState<ExportType>('winners-csv');
   const [isExporting, setIsExporting] = useState(false);
   const [exportSuccess, setExportSuccess] = useState(false);
@@ -543,7 +544,11 @@ const ExportData: React.FC<ExportDataProps> = ({ isOpen, onClose, winners, loser
   };
 
   const handleExport = () => {
-    setShowPasswordModal(true);
+    if (isLoggedIn) {
+      performExport();
+    } else {
+      setShowPasswordModal(true);
+    }
   };
 
   const handleModalClick = (e: React.MouseEvent) => {
@@ -591,7 +596,7 @@ const ExportData: React.FC<ExportDataProps> = ({ isOpen, onClose, winners, loser
       </style>
 
       {/* Password Modal - Higher z-index */}
-      {showPasswordModal && (
+      {showPasswordModal && !isLoggedIn && (
         <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
           <div className="bg-white bg-opacity-10 backdrop-blur-xl border border-white border-opacity-20 rounded-3xl p-8 max-w-md w-full shadow-2xl">
             <div className="flex items-center justify-between mb-6">

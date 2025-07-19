@@ -4,7 +4,6 @@ import { Winner, EliteSpiral } from '../config/data';
 import { supabase } from '../lib/supabase';
 import PasswordModal from './PasswordModal';
 
-const ADMIN_PASSWORD = 'InternationalMessaging@20';
 
 interface EliteSpiralPanelProps {
   winners: Winner[];
@@ -116,10 +115,6 @@ const EliteSpiralPanel: React.FC<EliteSpiralPanelProps> = ({ winners, eliteWinne
       setSelectedWinner(null);
       setChatIds(['']);
     }
-  };
-
-  const validatePassword = (password: string): boolean => {
-    return password === ADMIN_PASSWORD;
   };
 
 
@@ -377,16 +372,10 @@ const EliteSpiralPanel: React.FC<EliteSpiralPanelProps> = ({ winners, eliteWinne
             setSelectedWinner(null);
             setChatIds(['']);
           }}
-          onConfirm={(action) => {
-            const passwordInput = document.querySelector('input[type="password"]') as HTMLInputElement;
-            if (passwordInput && validatePassword(passwordInput.value)) {
-              handlePasswordConfirm(action);
-            } else {
-              alert('Invalid password. Access denied.');
-            }
-          }}
+          onConfirm={handlePasswordConfirm}
           guideName={selectedWinner?.name || ''}
           chatIds={chatIds.filter(id => id.trim() !== '')}
+          isLoggedIn={true}
         />
       </div>
     </div>

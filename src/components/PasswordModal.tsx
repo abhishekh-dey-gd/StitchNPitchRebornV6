@@ -7,7 +7,7 @@ interface PasswordModalProps {
   onConfirm: (action: 'pass' | 'fail') => void;
   guideName: string;
   chatIds?: string[];
-  skipPasswordValidation?: boolean;
+  isLoggedIn?: boolean;
 }
 
 const PasswordModal: React.FC<PasswordModalProps> = ({
@@ -16,7 +16,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
   onConfirm,
   guideName,
   chatIds = [],
-  skipPasswordValidation = false
+  isLoggedIn = false
 }) => {
   const [selectedAction, setSelectedAction] = useState<'pass' | 'fail' | null>(null);
   const [error, setError] = useState('');
@@ -53,7 +53,9 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
             <div className="p-2 bg-white bg-opacity-20 rounded-xl backdrop-blur-sm">
               <Lock className="w-6 h-6 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-white">Admin Access</h2>
+            <h2 className="text-2xl font-bold text-white">
+              {isLoggedIn ? 'Mark Guide' : 'Admin Access'}
+            </h2>
           </div>
           <button
             onClick={handleClose}
